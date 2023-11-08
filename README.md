@@ -3,8 +3,8 @@
 
 This is a follow along step-by-step guide to:
 1. Create a GKE Autopilot - Cluster
-2. Deploy the Google Microservices Project [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo/tree/main#readme)
-3. Deploy the Datadog Agent via Helm.
+2. Deploy the Datadog Agent via Helm
+3. Deploy the Google Microservices Project [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo/tree/main#readme)
 
 
 ## Pre-Requisites:
@@ -86,4 +86,57 @@ Add your IP to frontend-external Service yaml
   http://EXTERNAL_IP
   ```
 
-## Deploy the Datadog Agent via Helm.
+## Deploy the Datadog Agent via Helm
+Datadog Agent deployment for GKE Autopilot requires additional configuration as noted [here](https://docs.datadoghq.com/containers/kubernetes/distributions/?tab=helm#autopilot).
+
+Specify resource limits for Agent, Trace and Process container. And priority class for the Agent to ensure it is scheduled.
+
+```console
+datadog:
+  apiKey: <DATADOG_API_KEY>
+  appKey: <DATADOG_APP_KEY>
+  clusterName: <CLUSTER_NAME>
+
+  # Enable the new `kubernetes_state_core` check.
+  kubeStateMetricsCore:
+    enabled: true
+  # Avoid deploying kube-state-metrics chart.
+  # The new `kubernetes_state_core` doesn't require to deploy the kube-state-metrics anymore.
+  kubeStateMetricsEnabled: false
+
+agents:
+  containers:
+    agent:
+      # resources for the Agent container
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+
+    traceAgent:
+      # resources for the Trace Agent container
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+
+    processAgent:
+      # resources for the Process Agent container
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+
+  priorityClassCreate: true
+
+providers:
+  gke:
+    autopilot: true
+
+```
+
+## Delete Cluster
+If cluster is no longer needed, remember to clean up your resources
+```console
+gcloud container clusters delete CLUSTER-NAME --region REGION
+```
