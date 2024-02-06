@@ -138,5 +138,5 @@ providers:
 ## Delete Cluster
 If cluster is no longer needed, remember to clean up your resources
 ```console
-gcloud container clusters delete CLUSTER-NAME --region REGION
+gcloud container clusters delete CLUSTER_NAME --region REGION
 ```
