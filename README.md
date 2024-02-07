@@ -16,9 +16,10 @@ This is a follow along step-by-step guide to:
 First we will create a VPC in order to provide network fucntionality to our cluster
 ```console
 gcloud compute networks create NETWORK_NAME \
-    --subnet-mode=auto \
-    --bgp-routing-mode=DYNAMIC_ROUTING_MODE \
-    --mtu=MTU
+--project=PROJECT_NAME
+--subnet-mode=auto \
+--bgp-routing-mode=DYNAMIC_ROUTING_MODE \
+--mtu=MTU
 ```
 Now we can continue by creating our cluster
 ```console
